@@ -1,0 +1,20 @@
+{
+    "bootstrap_expect": {{ groups['consul'] | length }},
+    "client_addr": "{{ client_addr }}",
+    "datacenter": "{{ consul_datacenter_name }}",
+    "data_dir": "{{ consul_data_dir }}",
+    "domain": "consul",
+    "enable_script_checks": true,
+    "dns_config": {
+        "enable_truncate": true,
+        "only_passing": true
+    },
+    "enable_syslog": true,
+    "encrypt": "{{ consul_encryption_key }}",
+    "leave_on_terminate": true,
+    "log_level": "{{ consul_log_level }}",
+    "rejoin_after_leave": true,
+    "server": true,
+    "start_join": {{ groups['consul'] | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list | to_json }},
+    "ui": true
+}

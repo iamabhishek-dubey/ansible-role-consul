@@ -1,0 +1,60 @@
+---
+- name: Setting download base URL as fact
+  set_fact:
+    consul_download_url: https://releases.hashicorp.com/consul
+
+- name: Downloading and unarchiving consul binary (Linux)
+  unarchive:
+    src: "{{ consul_download_url }}/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip"
+    dest: /tmp
+    remote_src: yes
+  register: task_result
+  until: task_result is succeeded
+  retries: 5
+  delay: 5
+
+- name: Removing the zip downloaded package (Linux)
+  file:
+    path: "/tmp/consul_{{ consul_version }}_linux_amd64.zip"
+    state: absent
+
+- name: Moving consul binary to PATH location (Linux)
+  copy:
+    src: /tmp/consul
+    dest: /usr/local/bin
+    remote_src: yes
+  become: true
+
+- name: Creating consul configuration directories (Linux)
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  become: true
+  with_items:
+    - "{{ consul_data_dir }}"
+    - "{{ consul_config_dir }}"
+  
+- name: Creating consul configuration file (Linux)
+  template:
+    src: config.json.j2
+    dest: "{{ consul_config_dir }}/config.json"
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+  notify:
+    - Reload systemd daemon
+    - Restart consul service
+
+- name: Configuring systemd service for consul (Linux)
+  template:
+    src: consul-server.j2
+    dest: /etc/systemd/system/consul-server.service
+    owner: root
+    group: root
+    mode: 0755
+  become: true
+  notify:
+    - Reload systemd daemon
+    - Restart consul service

@@ -1,0 +1,18 @@
+---
+- name: Waiting for Consul ports to respond
+  wait_for:
+    port: "{{ item }}"
+    delay: 10
+  with_items:
+    - 8500
+    - 8301
+
+- name: Checking consul members health
+  command: consul members
+  register: command_result
+
+- name: Consul members are not ready
+  fail:
+    msg: All consul members are not in healthy state. Please check consul logs.
+  when:
+    command_result.stdout.split('\n')|length < groups['consul']|length

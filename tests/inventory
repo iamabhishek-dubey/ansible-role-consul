@@ -1,0 +1,7 @@
+[consul]
+consul-server1 ansible_ssh_host=54.212.217.221
+consul-server2 ansible_ssh_host=54.189.50.237
+consul-server3 ansible_ssh_host=54.244.160.224
+
+[consul:vars]
+ansible_ssh_user=ubuntu

@@ -1,0 +1,5 @@
+---
+consul_data_dir: /opt/consul
+consul_config_dir: /etc/consul.d
+consul_encryption_key: qpDl5EBnz4+5yFBUDIGkxD8g2WRhROVOF7IcDHAccAw=
+consul_datacenter_name: new-jersey-primary

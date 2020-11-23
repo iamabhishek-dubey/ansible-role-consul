@@ -1,0 +1,20 @@
+---
+- name: Including playbook for pre-flight-checks of consul cluster
+  include_tasks: pre-flight-checks.yaml
+
+- name: Including playbook for pre-requisities of consul cluster
+  include_tasks: pre-requisities.yaml
+
+- name: Including OS configuration playbook (Debian)
+  include_tasks: debian-os.yaml
+  when:
+    ansible_os_family == "Debian"
+
+- name: Including playbook to install and configure consul (Linux)
+  include_tasks: install-configure-consul.yaml
+
+- name: Running All Handlers
+  meta: flush_handlers
+  
+- name: Including playbook to healthcheck consul
+  include_tasks: healthcheck.yaml
