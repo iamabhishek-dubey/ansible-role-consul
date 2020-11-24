@@ -22,6 +22,7 @@
   copy:
     src: /tmp/consul
     dest: /usr/local/bin
+    mode: 0555
     remote_src: yes
   become: true
 
